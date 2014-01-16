@@ -223,7 +223,8 @@ void printTime(int row,int offset,DateTime now){
     lcd.print(now.minute());
     lcd.print(" Uhr");
     if(tempUsed==1){  //Temp!
-     lcd.print("   0");
+     lcd.print(" ");
+     lcd.print(getTemp());
      lcd.write(byte(1));
      lcd.print("C");
     }
@@ -248,4 +249,12 @@ als String ausgeben.
 String getDay(uint8_t day){
   String days[7]={"So","Mo","Di","Mi","Do","Fr","Sa"};
   return days[day];
+}
+
+/*
+Get temperature
+(Implemented as soon as DHT22 arrives)
+*/
+float getTemp(){
+    return 0.0;
 }
