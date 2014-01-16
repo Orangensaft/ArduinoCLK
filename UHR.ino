@@ -13,6 +13,26 @@ byte ue[8]={
  B10011,
  B01101,
  B00000};
+byte upar[8]={
+  B00100,
+  B01110,
+  B10101,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100
+};
+byte dnar[8]={
+ B00100,
+ B00100,
+ B00100,
+ B00100,
+ B00100,
+ B10101,
+ B01110,
+ B00100 
+};
 byte degr[8]={
  B01110,
  B01010,
@@ -59,8 +79,10 @@ void setup()
   pinMode(butMid,INPUT);
   pinMode(butR,INPUT);
   pinMode(butL,INPUT);
-  lcd.createChar(0,ue);
-  lcd.createChar(1,degr);
+  lcd.createChar(0,ue);    //ü
+  lcd.createChar(1,degr);  //°
+  lcd.createChar(2,upar);  //pfeil nach oben
+  lcd.createChar(3,dnar);  //pfeil nach unten
   Wire.begin();
   rtc.begin();
   if(!rtc.isrunning()){
@@ -159,9 +181,11 @@ void showMenu(int no){
  }
  if(no==3){//Zeitpos.
    if(timePos==0){
-     lcd.print(" O"); 
+     lcd.print(" ");
+     lcd.write(byte(2));//pfeil nach oben
    }else{
-    lcd.print(" U"); 
+    lcd.print(" ");
+    lcd.write(byte(3));//pfeil nach unten 
    }
  }
  if(no==4){
