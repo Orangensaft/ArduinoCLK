@@ -13,29 +13,6 @@ Planned:
 -->Display nur alle X Minuten anmachen  (Weiß nich ob gut)
 -->Display timeout                (Noch zu machen! LCD PIN 15 -> ARDUINO 12. 12 High -> LCD AN. 12 Low -> LCD aus.
 -->Temperatur / Luftfeuchtigkeit                            OK!(Menüeintrag)
-
-BUTTON PINS:###############
-BUTMitte : 5
-BUTy : 6
-BUTz : 7
-RTC PINS:###################
-Arduino - RTC
-A5  - SCL
-A4  - SDA
-LCD PINS:################
-1- GND
-2- +5
-3-BACKGRND (GND)
-4- PIN12    ->(RS)
-5- PIN 6    ->(RW)
-6 - PIN 11  ->(E)
-7-10 NC    ->D0-D3
-11- PIN 10 ->D4
-12- PIN 9  ->D5
-13- PIn 8  ->D6
-14- PIN 7  ->D7
-15- +5
-16- GND
 */
 
 byte ue[8]={
