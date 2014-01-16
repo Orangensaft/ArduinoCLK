@@ -55,6 +55,7 @@ byte ue[8]={
   String entries[ANZENT] = {"Wecker","Weckzeit","Ton","Zeitpos.","Temperatur","Back"};
   int timePos=0;
   int weckerUsed=0;
+  int tempUsed=0;
 void setup()
 {
   pinMode(butMid,INPUT);
@@ -119,6 +120,11 @@ void loop() {
       lcd.clear();
       showMenu(menuIndex);
     }
+    if(menuIndex==4){
+     tempUsed=rev(tempUsed);
+     lcd.clear();
+     showMenu(menuIndex); 
+    }
    }
   }
   //Update Time
@@ -158,6 +164,13 @@ void showMenu(int no){
    }else{
     lcd.print(" U"); 
    }
+ }
+ if(no==4){
+  if(tempUsed==0){
+   lcd.print(" AN");
+  }else{
+   lcd.print(" AUS"); 
+  }
  }
 }
 
@@ -210,6 +223,9 @@ void printTime(int row,int offset,DateTime now){
     }
     lcd.print(now.minute());
     lcd.print(" Uhr");
+    if(tempUsed==1){  //Temp!
+     lcd.print("   0°C");
+    }
 }
 
 /*
