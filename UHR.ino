@@ -4,17 +4,6 @@
 
 RTC_DS1307 rtc;
 
-/*
-Planned:
-->Menü  (+4Buttons (Menü,+,-,Ok)   OK!
--->Wecker (+Buzzer)                OK! (BUZZER EINBAUEN!!)
--->Weckton                          OK! (MENÜeintrag)
--->Weckzeit + Tag?                  OK! (Menüeintrag)
--->Display nur alle X Minuten anmachen  (Weiß nich ob gut)
--->Display timeout                (Noch zu machen! LCD PIN 15 -> ARDUINO 12. 12 High -> LCD AN. 12 Low -> LCD aus.
--->Temperatur / Luftfeuchtigkeit                            OK!(Menüeintrag)
-*/
-
 byte ue[8]={
  B10001,
  B00000,
@@ -23,6 +12,15 @@ byte ue[8]={
  B10001,
  B10011,
  B01101,
+ B00000};
+byte degr[8]={
+ B01110,
+ B01010,
+ B01110,
+ B00000,
+ B00000,
+ B00000,
+ B00000,
  B00000};
 
 //Buttons
@@ -62,6 +60,7 @@ void setup()
   pinMode(butR,INPUT);
   pinMode(butL,INPUT);
   lcd.createChar(0,ue);
+  lcd.createChar(1,degr);
   Wire.begin();
   rtc.begin();
   if(!rtc.isrunning()){
@@ -167,9 +166,9 @@ void showMenu(int no){
  }
  if(no==4){
   if(tempUsed==0){
-   lcd.print(" AN");
+   lcd.print(" AUS");
   }else{
-   lcd.print(" AUS"); 
+   lcd.print(" AN"); 
   }
  }
 }
@@ -224,7 +223,9 @@ void printTime(int row,int offset,DateTime now){
     lcd.print(now.minute());
     lcd.print(" Uhr");
     if(tempUsed==1){  //Temp!
-     lcd.print("   0°C");
+     lcd.print("   0");
+     lcd.write(byte(1));
+     lcd.print("C");
     }
 }
 
