@@ -92,7 +92,7 @@ void setup()
   lcd.begin(16,2);
   lcd.print("CLK v1.6c");
   lcd.setCursor(0,1);
-  lcd.print("By BiTSHiFT");
+  lcd.print("By Orangensaft");
   delay(2000);
   lcd.clear();
 }
