@@ -1,0 +1,11 @@
+####Hardware-Side####
+-Add DHT22 Temperature sensor
+-Add Buzzer
+-Add internal LEDs for swag ;)
+
+####Software-Side####
+-Add Alarm
+-Add Alarm tones
+-Maybe debounce buttons
+-Display timeout (timer is missing and options)
+
