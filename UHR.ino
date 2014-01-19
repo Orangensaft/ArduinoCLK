@@ -66,14 +66,18 @@ byte degr[8]={
   LiquidCrystal lcd(RS,RW,E,DB4,DB5,DB6,DB7);
   int pos=0;
   long prevLCDMillis;
+  long prevDispMillis;
+  long dispDelay = 5000;  //standart delay, bis display ausgeht
+  boolean useTimeout = false;
   long lcdDelay = 1000; //alle sekunde updaten
   int inMenu=0;
   int menuIndex=0;
-  const int ANZENT=6;
-  String entries[ANZENT] = {"Wecker","Weckzeit","Ton","Zeitpos.","Temperatur","Back"};
+  const int ANZENT=7;
+  String entries[ANZENT] = {"Wecker","Weckzeit","Ton","Zeitpos.","Temperatur","Timeout","Back"};
   int timePos=0;
   int weckerUsed=0;
   int tempUsed=0;
+  int dispOn=1;
 void setup()
 {
   pinMode(butMid,INPUT);
@@ -102,6 +106,10 @@ void loop() {
   butRstate=digitalRead(butR);
   butLstate=digitalRead(butL);  
   if(butRstate!=butROld && butRstate==1){  //rechter button
+   if(dispOn==0){
+    lcd.display();
+    dispOn=1; //display timer starten!
+   }else{
    if(inMenu==1){
      menuIndex=menuIndex+1;
      if(menuIndex==ANZENT){
@@ -109,8 +117,13 @@ void loop() {
      }
     showMenu(menuIndex);
    }
+   }
   }
   if(butLstate!=butLOld && butLstate==1){  //linker button
+   if(dispOn==0){
+    lcd.display();
+    dispOn=1; //Auch hier displaytimer starten!
+   }else{
    if(inMenu==1){
     menuIndex=menuIndex-1;
     if(menuIndex<0){
@@ -118,10 +131,13 @@ void loop() {
     }
     showMenu(menuIndex);
    }
+   }
   }
   if(butMidstate!=butMidOld && butMidstate==1){  //mittler button
-   lcd.setCursor(15,0);
-   lcd.print("M");
+   if(dispOn==0){
+    lcd.display();
+    dispOn=1;  //Display timer starten! 
+   }else{
    if(inMenu==0){      //in menümodus wechseln
      inMenu=1;
      showMenu(0);
@@ -146,6 +162,7 @@ void loop() {
      lcd.clear();
      showMenu(menuIndex); 
     }
+   }
    }
   }
   //Update Time
@@ -194,6 +211,14 @@ void showMenu(int no){
   }else{
    lcd.print(" AN"); 
   }
+ }
+ if(no==5){
+   if(useTimeout){
+    lcd.print(" ");
+    lcd.print((int)dispDelay/1000); 
+   }else{
+    lcd.print(" AUS"); 
+   }
  }
 }
 
