@@ -100,6 +100,8 @@ byte bell[8]={
   int tempUsed=0;
   int dispOn=1;
   long timeMillis;
+  int alarmTime[2]={6,15};
+
 void setup()
 {
   pinMode(butMid,INPUT);
@@ -124,7 +126,6 @@ void setup()
   lcd.print("By Orangensaft");
   delay(2000);
   lcd.clear();
-  Serial.begin(9600);
 }
 
 void loop() {
@@ -171,7 +172,7 @@ void loop() {
      inMenu=1;
      showMenu(0);
      menuIndex=0;
-   }else{                      //im menü
+   }else{//im menü
     if(menuIndex==ANZENT-1){  //Menüpunkt "back"
      inMenu=0; 
      lcd.clear();
@@ -181,6 +182,12 @@ void loop() {
      weckerUsed=rev(weckerUsed);
      lcd.clear();
      showMenu(menuIndex);
+    }
+    if(menuIndex==1){
+      increaseAlarm(15);
+      lcd.clear();
+      showMenu(menuIndex); 
+      
     }
     if(menuIndex==3){     //Menüpunkt "Zeitpos."
       timePos=rev(timePos);
@@ -206,7 +213,7 @@ void loop() {
     lcd.clear();
     showMenu(menuIndex); 
    }
-   }
+     }
    }
    timeMillis=millis();
   }
@@ -216,14 +223,10 @@ void loop() {
     DateTime now = rtc.now();
     printDate(rev(timePos),now);
     printTime(timePos,0,now);
+    if(now.second()==0 || now.second()==1 && weckerUsed==1 && now.hour()==alarmTime[0] && now.minute()==alarmTime[1]){
+     //ALARM!!!!1111 
+    }
   }
-  Serial.print("Curmillis: ");
-  Serial.print(curMillis);
-  Serial.print(" timeMillis: ");
-  Serial.print(timeMillis);
-  Serial.print(" c-t ");
-  Serial.print(curMillis-timeMillis);
-  Serial.print("\n");
   if((curMillis-timeMillis > dispDelay) && inMenu==0 && useTimeout && dispOn==1){
     digitalWrite(backLight,LOW);
     dispOn=0;
@@ -253,6 +256,10 @@ void showMenu(int no){
     lcd.print(" ");
     lcd.write(byte(4)); 
    }
+ }
+ if(no==1){
+  lcd.print(" ");
+  printAlarm(); 
  }
  if(no==3){//Zeitpos.
    if(timePos==0){
@@ -338,6 +345,34 @@ void printTime(int row,int offset,DateTime now){
      lcd.write(byte(1));
      lcd.print("C");
     }
+}
+
+void increaseAlarm(int offset){
+  int hours=alarmTime[0];
+  int mins=alarmTime[1];
+  if(mins+offset>59){
+     mins=(mins+offset)-60;
+     hours=hours+1; 
+  }else{
+     mins=mins+offset; 
+  }
+  if(hours>23){
+   hours=0; 
+  }
+  alarmTime[0]=hours;
+  alarmTime[1]=mins;
+}
+
+void printAlarm(){
+   if(alarmTime[0]<10){
+    lcd.print("0");
+   } 
+   lcd.print(alarmTime[0]);
+   lcd.print(":");
+   if(alarmTime[1]<10){
+    lcd.print("0"); 
+   }
+   lcd.print(alarmTime[1]);
 }
 
 /*
