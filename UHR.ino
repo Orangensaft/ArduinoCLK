@@ -84,10 +84,10 @@ byte bell[8]={
   int DB5=9;  // 5
   int DB6=10;  // 6
   int DB7=11;  // 7
+  int backLight=12;
   LiquidCrystal lcd(RS,RW,E,DB4,DB5,DB6,DB7);
   int pos=0;
   long prevLCDMillis;
-  long prevDispMillis;
   long dispDelay = 4000;  //standart delay, bis display ausgeht
   boolean useTimeout = false;
   long lcdDelay = 1000; //alle sekunde updaten
@@ -99,11 +99,14 @@ byte bell[8]={
   int weckerUsed=0;
   int tempUsed=0;
   int dispOn=1;
+  long timeMillis;
 void setup()
 {
   pinMode(butMid,INPUT);
   pinMode(butR,INPUT);
   pinMode(butL,INPUT);
+  pinMode(backLight,OUTPUT);
+  digitalWrite(backLight,HIGH);
   lcd.createChar(0,ue);    //ü
   lcd.createChar(1,degr);  //°
   lcd.createChar(2,upar);  //pfeil nach oben
@@ -121,6 +124,7 @@ void setup()
   lcd.print("By Orangensaft");
   delay(2000);
   lcd.clear();
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -130,7 +134,7 @@ void loop() {
   butLstate=digitalRead(butL);  
   if(butRstate!=butROld && butRstate==1){  //rechter button
    if(dispOn==0){
-    lcd.display();
+    digitalWrite(backLight,HIGH);
     dispOn=1; //display timer starten!
    }else{
    if(inMenu==1){
@@ -141,10 +145,11 @@ void loop() {
     showMenu(menuIndex);
    }
    }
+   timeMillis=millis();
   }
   if(butLstate!=butLOld && butLstate==1){  //linker button
    if(dispOn==0){
-    lcd.display();
+    digitalWrite(backLight,HIGH);
     dispOn=1; //Auch hier displaytimer starten!
    }else{
    if(inMenu==1){
@@ -155,10 +160,11 @@ void loop() {
     showMenu(menuIndex);
    }
    }
+   timeMillis=millis();
   }
   if(butMidstate!=butMidOld && butMidstate==1){  //mittler button
    if(dispOn==0){
-    lcd.display();
+    digitalWrite(backLight,HIGH);
     dispOn=1;  //Display timer starten! 
    }else{
    if(inMenu==0){      //in menümodus wechseln
@@ -169,6 +175,7 @@ void loop() {
     if(menuIndex==ANZENT-1){  //Menüpunkt "back"
      inMenu=0; 
      lcd.clear();
+     timeMillis=millis();
     } 
     if(menuIndex==0){       //Menüpunkt "Wecker"
      weckerUsed=rev(weckerUsed);
@@ -201,6 +208,7 @@ void loop() {
    }
    }
    }
+   timeMillis=millis();
   }
   //Update Time
   if(curMillis-prevLCDMillis > lcdDelay && inMenu==0){
@@ -209,6 +217,18 @@ void loop() {
     printDate(rev(timePos),now);
     printTime(timePos,0,now);
   }
+  Serial.print("Curmillis: ");
+  Serial.print(curMillis);
+  Serial.print(" timeMillis: ");
+  Serial.print(timeMillis);
+  Serial.print(" c-t ");
+  Serial.print(curMillis-timeMillis);
+  Serial.print("\n");
+  if((curMillis-timeMillis > dispDelay) && inMenu==0 && useTimeout && dispOn==1){
+    digitalWrite(backLight,LOW);
+    dispOn=0;
+  }
+  
   butLOld=butLstate;  //soft debounce
   butROld=butRstate;
   butMidOld=butMidstate;
