@@ -42,6 +42,27 @@ byte degr[8]={
  B00000,
  B00000,
  B00000};
+ 
+byte yes[8]={
+  B00000,
+  B00000,
+  B00000,
+  B00001,
+  B00010,
+  B10100,
+  B01000};
+
+//Thx Chris ;)
+byte bell[8]={
+   B00000,
+   B00100,
+   B01110,
+   B01110,
+   B01110,
+   B11111,
+   B00100,
+   B00000}; 
+  
 
 //Buttons
  int butMid=5;
@@ -67,7 +88,7 @@ byte degr[8]={
   int pos=0;
   long prevLCDMillis;
   long prevDispMillis;
-  long dispDelay = 5000;  //standart delay, bis display ausgeht
+  long dispDelay = 4000;  //standart delay, bis display ausgeht
   boolean useTimeout = false;
   long lcdDelay = 1000; //alle sekunde updaten
   int inMenu=0;
@@ -87,6 +108,8 @@ void setup()
   lcd.createChar(1,degr);  //°
   lcd.createChar(2,upar);  //pfeil nach oben
   lcd.createChar(3,dnar);  //pfeil nach unten
+  lcd.createChar(4,yes);
+  lcd.createChar(5,bell);
   Wire.begin();
   rtc.begin();
   if(!rtc.isrunning()){
@@ -162,6 +185,20 @@ void loop() {
      lcd.clear();
      showMenu(menuIndex); 
     }
+    if(menuIndex==5){
+     if(useTimeout){
+        if(dispDelay==10000){
+        useTimeout=false;
+        }else{
+          dispDelay+=3000;
+        }
+     }else{
+     useTimeout=true;
+     dispDelay=4000;
+     }
+    lcd.clear();
+    showMenu(menuIndex); 
+   }
    }
    }
   }
@@ -191,9 +228,10 @@ void showMenu(int no){
  lcd.print(entries[no]); 
  if(no==0){//Wecker an/aus
    if(weckerUsed==0){
-    lcd.print(" AUS"); 
+    lcd.print(" x"); 
    }else{
-    lcd.print(" AN"); 
+    lcd.print(" ");
+    lcd.write(byte(4)); 
    }
  }
  if(no==3){//Zeitpos.
@@ -207,17 +245,19 @@ void showMenu(int no){
  }
  if(no==4){
   if(tempUsed==0){
-   lcd.print(" AUS");
+   lcd.print(" x");
   }else{
-   lcd.print(" AN"); 
+   lcd.print(" ");
+   lcd.write(byte(4));
   }
  }
  if(no==5){
    if(useTimeout){
     lcd.print(" ");
     lcd.print((int)dispDelay/1000); 
+    lcd.print("s");
    }else{
-    lcd.print(" AUS"); 
+    lcd.print(" x"); 
    }
  }
 }
@@ -243,7 +283,8 @@ void printDate(int row,DateTime now){
     lcd.print(".");
     lcd.print(now.year());
     if(weckerUsed==1){
-    lcd.print("  W");
+    lcd.print("  ");
+    lcd.write(byte(5));
     }
 }
 
