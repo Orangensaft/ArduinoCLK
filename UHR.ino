@@ -224,7 +224,7 @@ void loop() {
     printDate(rev(timePos),now);
     printTime(timePos,0,now);
     if(now.second()==0 || now.second()==1 && weckerUsed==1 && now.hour()==alarmTime[0] && now.minute()==alarmTime[1]){
-     //ALARM!!!!1111 
+     alarm();
     }
   }
   if((curMillis-timeMillis > dispDelay) && inMenu==0 && useTimeout && dispOn==1){
@@ -394,6 +394,11 @@ als String ausgeben.
 String getDay(uint8_t day){
   String days[7]={"So","Mo","Di","Mi","Do","Fr","Sa"};
   return days[day];
+}
+
+void alarm(){
+  
+ //ALARM! 
 }
 
 /*
