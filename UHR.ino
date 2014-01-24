@@ -94,7 +94,7 @@ byte bell[8]={
   int inMenu=0;
   int menuIndex=0;
   const int ANZENT=7;      //alarm    alarmtime  sound   Timepos.  Temperature 
-  String entries[ANZENT] = {"Wecker","Weckzeit","Ton","Zeitpos.","Temperatur","Timeout","Back"};
+  String entries[ANZENT] = {"Alarm","Alarmtime","Sound","Timepos.","Temperature","Timeout","Back"};
   int timePos=0;
   int weckerUsed=0;
   int tempUsed=0;
@@ -121,7 +121,7 @@ void setup()
    rtc.adjust(DateTime(__DATE__, __TIME__)); 
   }
   lcd.begin(16,2);
-  lcd.print("CLK v1.7b");
+  lcd.print("CLK v1.7b_EN");
   lcd.setCursor(0,1);
   lcd.print("By Orangensaft");
   delay(2000);
@@ -244,9 +244,7 @@ Option to show <-no
 void showMenu(int no){
  lcd.clear();
  lcd.setCursor(3,0);
- lcd.print("---Men");
- lcd.write(byte(0));
- lcd.print("---");
+ lcd.print("---Menu---");
  lcd.setCursor(0,1);
  lcd.print(entries[no]); 
  if(no==0){//Alarm on/off
@@ -333,7 +331,7 @@ void printTime(int row,int offset,DateTime now){
        lcd.print("0"); 
     }
     lcd.print(now.minute());
-    lcd.print(" Uhr");
+    lcd.print(" o'clock");
     if(tempUsed==1){  //Temp!
      lcd.print(" ");
      lcd.print(getTemp());
@@ -386,7 +384,7 @@ int rev(int n){
 Return Day of week
 */
 String getDay(uint8_t day){
-  String days[7]={"So","Mo","Di","Mi","Do","Fr","Sa"};
+  String days[7]={"Su","Mo","Tu","We","Th","Fr","Sa"};
   return days[day];
 }
 
