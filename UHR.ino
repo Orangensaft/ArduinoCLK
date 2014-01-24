@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <RTClib.h>
 #include <LiquidCrystal.h>
-
+#include "pitches.h"
 RTC_DS1307 rtc;
 
 byte ue[8]={
@@ -83,6 +83,7 @@ byte bell[8]={
   int DB6=10;  // 6
   int DB7=11;  // 7
   int backLight=12;
+  int buzzer=13;
   LiquidCrystal lcd(RS,RW,E,DB4,DB5,DB6,DB7);
   //various vars.
   int pos=0;
@@ -145,7 +146,7 @@ void loop() {
     showMenu(menuIndex);
    }
    }
-   timeMillis=millis();
+   timeMillis=curMillis;
   }
   if(butLstate!=butLOld && butLstate==1){  //left button
    if(dispOn==0){
@@ -160,7 +161,7 @@ void loop() {
     showMenu(menuIndex);
    }
    }
-   timeMillis=millis();
+   timeMillis=curMillis;
   }
   if(butMidstate!=butMidOld && butMidstate==1){  //middle button
    if(dispOn==0){
@@ -175,7 +176,7 @@ void loop() {
     if(menuIndex==ANZENT-1){  //Menüpunkt "back"
      inMenu=0; 
      lcd.clear();
-     timeMillis=millis();
+     timeMillis=curMillis;
     } 
     if(menuIndex==0){       //Option "Alarm"
      weckerUsed=rev(weckerUsed);
@@ -214,7 +215,7 @@ void loop() {
    }
      }
    }
-   timeMillis=millis();
+   timeMillis=curMillis;
   }
   //Update Time
   if(curMillis-prevLCDMillis > lcdDelay && inMenu==0){
@@ -237,7 +238,7 @@ void loop() {
 }
 
 /*
-Shoe Menu and current option
+Show Menu and current option
 Option to show <-no
 */
 void showMenu(int no){
@@ -391,18 +392,17 @@ String getDay(uint8_t day){
 
 void alarm(){
   while(digitalRead(butMid)!=1 && digitalRead(butL)!=1 && digitalRead(butR)!=1){
-   makeNoise();
+   tone(buzzer,NOTE_E6);
    digitalWrite(backLight,LOW);
    delay(250);
+   noTone(buzzer);
+   tone(buzzer,NOTE_C6);
    digitalWrite(backLight,HIGH);
    delay(250); 
+   noTone(buzzer);
   }
 }
 
-//Make some noise!
-void makeNoise(){
-  
-}
 
 /*
 Get temperature

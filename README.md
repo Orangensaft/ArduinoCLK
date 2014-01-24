@@ -8,6 +8,6 @@ Currently planned features:
 
 -Show Time/Date (Works)
 -Show Temperature (Works)
--Of course a alarm-function (TODO)
--Automatic backlight timeout because that LCD is kinda bright (Working on)
--customisations like rearrange the stuff shown on LCD, backlight timeout etc. (Works for the stuff that is already implemented)
+-Of course a alarm-function (Works)
+-Automatic backlight timeout because that LCD is kinda bright (Workis)
+-customisations like rearrange the stuff shown on LCD, backlight timeout etc. (Works)
