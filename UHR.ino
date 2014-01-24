@@ -74,33 +74,32 @@ byte bell[8]={
  int butMidstate=0;
  int butRstate=0;
  int butLstate=0;
-//zustände    //0-> Uhrzeit      1->Menüoberfläche   2-> ...
- int state=0;
-//Wecker
-  int RS=2;  //Registerauswahl
+//LDCD
+  int RS=2;  //Registerselect
   int RW=3;
   int E=4;   //LCD-Clock
-  int DB4=8; //Datenleitungen 4
+  int DB4=8; //Dataline 4
   int DB5=9;  // 5
   int DB6=10;  // 6
   int DB7=11;  // 7
   int backLight=12;
   LiquidCrystal lcd(RS,RW,E,DB4,DB5,DB6,DB7);
+  //various vars.
   int pos=0;
   long prevLCDMillis;
-  long dispDelay = 4000;  //standart delay, bis display ausgeht
+  long dispDelay = 4000;  //standard display timeout
   boolean useTimeout = false;
-  long lcdDelay = 1000; //alle sekunde updaten
+  long lcdDelay = 1000; //Update interval for LCD
   int inMenu=0;
   int menuIndex=0;
-  const int ANZENT=7;
+  const int ANZENT=7;      //alarm    alarmtime  sound   Timepos.  Temperature 
   String entries[ANZENT] = {"Wecker","Weckzeit","Ton","Zeitpos.","Temperatur","Timeout","Back"};
   int timePos=0;
   int weckerUsed=0;
   int tempUsed=0;
   int dispOn=1;
   long timeMillis;
-  int alarmTime[2]={6,15};
+  int alarmTime[2]={6,15}; //default alarm time
 
 void setup()
 {
@@ -111,8 +110,8 @@ void setup()
   digitalWrite(backLight,HIGH);
   lcd.createChar(0,ue);    //ü
   lcd.createChar(1,degr);  //°
-  lcd.createChar(2,upar);  //pfeil nach oben
-  lcd.createChar(3,dnar);  //pfeil nach unten
+  lcd.createChar(2,upar);  //uparrow
+  lcd.createChar(3,dnar);  //downarrow
   lcd.createChar(4,yes);
   lcd.createChar(5,bell);
   Wire.begin();
@@ -133,10 +132,10 @@ void loop() {
   butMidstate=digitalRead(butMid);
   butRstate=digitalRead(butR);
   butLstate=digitalRead(butL);  
-  if(butRstate!=butROld && butRstate==1){  //rechter button
+  if(butRstate!=butROld && butRstate==1){  //right button
    if(dispOn==0){
     digitalWrite(backLight,HIGH);
-    dispOn=1; //display timer starten!
+    dispOn=1;
    }else{
    if(inMenu==1){
      menuIndex=menuIndex+1;
@@ -148,10 +147,10 @@ void loop() {
    }
    timeMillis=millis();
   }
-  if(butLstate!=butLOld && butLstate==1){  //linker button
+  if(butLstate!=butLOld && butLstate==1){  //left button
    if(dispOn==0){
     digitalWrite(backLight,HIGH);
-    dispOn=1; //Auch hier displaytimer starten!
+    dispOn=1;
    }else{
    if(inMenu==1){
     menuIndex=menuIndex-1;
@@ -163,12 +162,12 @@ void loop() {
    }
    timeMillis=millis();
   }
-  if(butMidstate!=butMidOld && butMidstate==1){  //mittler button
+  if(butMidstate!=butMidOld && butMidstate==1){  //middle button
    if(dispOn==0){
     digitalWrite(backLight,HIGH);
-    dispOn=1;  //Display timer starten! 
+    dispOn=1;  
    }else{
-   if(inMenu==0){      //in menümodus wechseln
+   if(inMenu==0){      //Open Menu
      inMenu=1;
      showMenu(0);
      menuIndex=0;
@@ -178,7 +177,7 @@ void loop() {
      lcd.clear();
      timeMillis=millis();
     } 
-    if(menuIndex==0){       //Menüpunkt "Wecker"
+    if(menuIndex==0){       //Option "Alarm"
      weckerUsed=rev(weckerUsed);
      lcd.clear();
      showMenu(menuIndex);
@@ -189,7 +188,7 @@ void loop() {
       showMenu(menuIndex); 
       
     }
-    if(menuIndex==3){     //Menüpunkt "Zeitpos."
+    if(menuIndex==3){     //Option "Timeposition"
       timePos=rev(timePos);
       lcd.clear();
       showMenu(menuIndex);
@@ -232,14 +231,14 @@ void loop() {
     dispOn=0;
   }
   
-  butLOld=butLstate;  //soft debounce
+  butLOld=butLstate;  //"soft" debounce
   butROld=butRstate;
   butMidOld=butMidstate;
 }
 
 /*
-Menü und aktuellen
-Menüpunkt anzeigen <-no
+Shoe Menu and current option
+Option to show <-no
 */
 void showMenu(int no){
  lcd.clear();
@@ -249,7 +248,7 @@ void showMenu(int no){
  lcd.print("---");
  lcd.setCursor(0,1);
  lcd.print(entries[no]); 
- if(no==0){//Wecker an/aus
+ if(no==0){//Alarm on/off
    if(weckerUsed==0){
     lcd.print(" x"); 
    }else{
@@ -261,13 +260,13 @@ void showMenu(int no){
   lcd.print(" ");
   printAlarm(); 
  }
- if(no==3){//Zeitpos.
+ if(no==3){
    if(timePos==0){
      lcd.print(" ");
-     lcd.write(byte(2));//pfeil nach oben
+     lcd.write(byte(2));//uparrow
    }else{
     lcd.print(" ");
-    lcd.write(byte(3));//pfeil nach unten 
+    lcd.write(byte(3));//downarrow 
    }
  }
  if(no==4){
@@ -290,9 +289,7 @@ void showMenu(int no){
 }
 
 /*
-Datum auf LCD schreiben
-row -> Zeile
-now -> DateTime struct
+Output date to LCD
 */
 void printDate(int row,DateTime now){
     lcd.setCursor(0,row);
@@ -316,10 +313,7 @@ void printDate(int row,DateTime now){
 }
 
 /*
-Zeit auf LCD schreiben
-row -> Zeile
-offset -> Verschiebeoffset
-now -> DateTime struct
+Output time to LCD
 */
 void printTime(int row,int offset,DateTime now){
     lcd.setCursor(offset,row);
@@ -376,9 +370,9 @@ void printAlarm(){
 }
 
 /*
-Pseudo invertieren
-rev(n) = 1, falls n=0
-         0, sonst.
+Pseudo invert
+rev(n) = 1, if n=0
+         0, else.
 */
 int rev(int n){
  if(n==0){
@@ -388,8 +382,7 @@ int rev(int n){
 }
 
 /*
-Wochentag vom DateTime-Format day
-als String ausgeben.
+Return Day of week
 */
 String getDay(uint8_t day){
   String days[7]={"So","Mo","Di","Mi","Do","Fr","Sa"};
@@ -398,11 +391,17 @@ String getDay(uint8_t day){
 
 void alarm(){
   while(digitalRead(butMid)!=1 && digitalRead(butL)!=1 && digitalRead(butR)!=1){
+   makeNoise();
    digitalWrite(backLight,LOW);
    delay(250);
    digitalWrite(backLight,HIGH);
    delay(250); 
   }
+}
+
+//Make some noise!
+void makeNoise(){
+  
 }
 
 /*
