@@ -121,7 +121,7 @@ void setup()
    rtc.adjust(DateTime(__DATE__, __TIME__)); 
   }
   lcd.begin(16,2);
-  lcd.print("CLK v1.6c");
+  lcd.print("CLK v1.7b");
   lcd.setCursor(0,1);
   lcd.print("By Orangensaft");
   delay(2000);
@@ -223,7 +223,7 @@ void loop() {
     DateTime now = rtc.now();
     printDate(rev(timePos),now);
     printTime(timePos,0,now);
-    if(now.second()==0 || now.second()==1 && weckerUsed==1 && now.hour()==alarmTime[0] && now.minute()==alarmTime[1]){
+    if((now.second()==0 || now.second()==1) && weckerUsed==1 && now.hour()==alarmTime[0] && now.minute()==alarmTime[1]){
      alarm();
     }
   }
@@ -397,8 +397,12 @@ String getDay(uint8_t day){
 }
 
 void alarm(){
-  
- //ALARM! 
+  while(digitalRead(butMid)!=1 && digitalRead(butL)!=1 && digitalRead(butR)!=1){
+   digitalWrite(backLight,LOW);
+   delay(250);
+   digitalWrite(backLight,HIGH);
+   delay(250); 
+  }
 }
 
 /*
