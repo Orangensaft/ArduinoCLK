@@ -121,7 +121,7 @@ void setup()
    rtc.adjust(DateTime(__DATE__, __TIME__)); 
   }
   lcd.begin(16,2);
-  lcd.print("CLK v1.7b");
+  lcd.print("CLK v1.8");
   lcd.setCursor(0,1);
   lcd.print("By Orangensaft");
   delay(2000);
