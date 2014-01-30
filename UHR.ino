@@ -2,7 +2,15 @@
 #include <RTClib.h>
 #include <LiquidCrystal.h>
 #include "pitches.h"
+//#include "DHT.h"
 RTC_DS1307 rtc;
+
+/* Not enough pins  :(
+#define DHTPIN 0   
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+*/
+
 
 byte ue[8]={
  B10001,
@@ -108,6 +116,7 @@ void setup()
   pinMode(butR,INPUT);
   pinMode(butL,INPUT);
   pinMode(backLight,OUTPUT);
+  //dht.begin();
   digitalWrite(backLight,HIGH);
   lcd.createChar(0,ue);    //ü
   lcd.createChar(1,degr);  //°
@@ -324,10 +333,8 @@ void printTime(int row,int offset,DateTime now){
     lcd.print(now.hour());
     if(pos==0){
        lcd.print(":");
-       pos=1; 
       }else{
        lcd.print(" ");
-       pos=0; 
     }
     if(now.minute()<10){
        lcd.print("0"); 
@@ -336,10 +343,16 @@ void printTime(int row,int offset,DateTime now){
     lcd.print(" Uhr");
     if(tempUsed==1){  //Temp!
      lcd.print(" ");
+     if(pos==0){
      lcd.print(getTemp());
      lcd.write(byte(1));
      lcd.print("C");
+     }else{
+      lcd.print(getHum());
+      lcd.print(" %");       
+     }
     }
+    pos=rev(pos);
 }
 
 void increaseAlarm(int offset){
@@ -406,8 +419,24 @@ void alarm(){
 
 /*
 Get temperature
-(Implemented as soon as DHT22 arrives)
 */
 float getTemp(){
+    /*
+    float t = dht.readTemperature();
+    if(isnan(t)){
+      */
+     return 0.0; 
+    /*}else{
+      return t;
+    }*/
+}
+
+float getHum(){
+    /*
+   float h = dht.readHumidity();
+   if(isnan(h)){*/
     return 0.0;
+   /*}else{
+    return h;
+   } */
 }
